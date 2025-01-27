@@ -1,4 +1,4 @@
-import bookImage from './../../assets/images/BooksImages/book-luv2code-1000.png';
+import bookImage from './../../../assets/images/BooksImages/book-luv2code-1000.png';
 
 export const ReturnBook = () => {
     return (
