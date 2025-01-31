@@ -24,5 +24,23 @@ public class BookController {
         Pageable pageable = PageRequest.of(page, size);
         return bookRepository.findAll(pageable);
     }
+
+    @GetMapping("/search/findByTitleContaining")
+    public Page<Book> getBooksByTitleContaining(
+            @RequestParam(value = "title") String title,
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "size", defaultValue = "10") int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return bookRepository.findByTitleContaining(title, pageable);
+    }
+
+    @GetMapping("/search/findByCategory")
+    public Page<Book> getBooksByCategory(
+            @RequestParam(value = "category") String category,
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "size", defaultValue = "10") int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return bookRepository.findByCategory(category, pageable);
+    }
 }
 
