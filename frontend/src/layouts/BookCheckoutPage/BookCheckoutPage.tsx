@@ -2,6 +2,8 @@ import { useEffect, useState } from "react"
 import BookModel from "../../models/BookModel"
 import { SpinnerLoading } from "../Utils/SpinnerLoading"
 import bookImage from '../../assets/images/BooksImages/book-luv2code-1000.png';
+import { StarsReview } from "../Utils/StarsReview";
+import { CheckoutAndReviewBox } from "./CheckoutAndReviewBox";
 
 export const BookCheckoutPage = () => {
 
@@ -53,20 +55,25 @@ export const BookCheckoutPage = () => {
     const img = book?.img ? book.img : bookImage
 
     return (
-        <div className="container d-none d-lg-block">
-            <div className="row mt-5">
-                <div className="col-sm-2 col-md-2">
-                    <img src={img} width="226" height="349" alt="Book" />
-                </div>
-                <div className="col-4 col-md-4 container">
-                    <div className="ml-2">
-                        <h2>{book?.title}</h2>
-                        <h5 className="text-primary">{book?.author}</h5>
-                        <p className="lead">{book?.description}</p>
+        <>
+            <div className="container d-none d-lg-block">
+                <div className="row mt-5">
+                    <div className="col-sm-2 col-md-2">
+                        <img src={img} width="226" height="349" alt="Book" />
                     </div>
+                    <div className="col-4 col-md-4 container">
+                        <div className="ml-2">
+                            <h2>{book?.title}</h2>
+                            <h5 className="text-primary">{book?.author}</h5>
+                            <p className="lead">{book?.description}</p>
+                            <StarsReview rating={2.5} size={32} />
+                        </div>
+                    </div>
+                    <CheckoutAndReviewBox book={book} mobile={false} />
                 </div>
                 <hr />
             </div>
+
             <div className="container d-lg-none mt-5">
                 <div className="d-flex justify-content-center align-items-center">
                     <img src={img} width="226" height="349" alt="Book" />
@@ -76,10 +83,12 @@ export const BookCheckoutPage = () => {
                         <h2>{book?.title}</h2>
                         <h5 className="text-primary">{book?.author}</h5>
                         <p className="lead">{book?.description}</p>
+                        <StarsReview rating={2.5} size={32} />
                     </div>
                 </div>
+                <CheckoutAndReviewBox book={book} mobile={true} />
                 <hr />
             </div>
-        </div>
+        </>
     )
 }
