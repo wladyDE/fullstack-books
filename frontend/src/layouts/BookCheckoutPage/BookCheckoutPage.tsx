@@ -4,12 +4,18 @@ import { SpinnerLoading } from "../Utils/SpinnerLoading"
 import bookImage from '../../assets/images/BooksImages/book-luv2code-1000.png';
 import { StarsReview } from "../Utils/StarsReview";
 import { CheckoutAndReviewBox } from "./CheckoutAndReviewBox";
+import ReviewModel from "../../models/ReviewModel";
+import { LatestReviews } from "./LatestReviews";
 
 export const BookCheckoutPage = () => {
 
     const [book, setBook] = useState<BookModel>()
     const [isLoading, setIsLoading] = useState(true)
     const [httpError, setHttpError] = useState<string | null>(null)
+
+    const [reviews, setReviews] = useState<ReviewModel[]>([])
+    const [totalStars, setTotalStars] = useState(0)
+    const [isLoadingReview, setIsLoadingReview] = useState(true)
 
     const bookId = (window.location.pathname).split('/')[2]
 
@@ -36,7 +42,35 @@ export const BookCheckoutPage = () => {
         })
     }, [])
 
-    if (isLoading) {
+    useEffect(() => {
+        const fetchBookReviews = async () => {
+            const reviewUrl: string = `http://localhost:8080/api/reviews/search/findByBookId?book_id=${bookId}`
+
+            const responseReviews = await fetch(reviewUrl)
+
+            if(!responseReviews.ok) {
+                throw new Error('Something went wrong')
+            }
+
+            const responseJsonReviews = await responseReviews.json()
+
+            const responseData: ReviewModel[] = []= responseJsonReviews.content
+
+            const weightedStarReviews: number = responseData.reduce((acc, currentValue) => acc + currentValue.rating, 0)
+            const round = (Math.round((weightedStarReviews / responseData.length) * 2) / 2).toFixed(1)
+            setTotalStars(Number(round))
+
+            setReviews(responseData)
+            setIsLoadingReview(false)
+        }
+
+        fetchBookReviews().catch((error: Error) => {
+            setIsLoadingReview(false)
+            setHttpError(error.message)
+        })
+    }, [])
+
+    if (isLoading || isLoadingReview) {
         return (
             <div className="container m-5">
                 <SpinnerLoading />
@@ -66,12 +100,13 @@ export const BookCheckoutPage = () => {
                             <h2>{book?.title}</h2>
                             <h5 className="text-primary">{book?.author}</h5>
                             <p className="lead">{book?.description}</p>
-                            <StarsReview rating={2.5} size={32} />
+                            <StarsReview rating={totalStars} size={32} />
                         </div>
                     </div>
                     <CheckoutAndReviewBox book={book} mobile={false} />
                 </div>
                 <hr />
+                <LatestReviews reviews={reviews} bookId={book?.id} mobile={false} />
             </div>
 
             <div className="container d-lg-none mt-5">
@@ -88,6 +123,7 @@ export const BookCheckoutPage = () => {
                 </div>
                 <CheckoutAndReviewBox book={book} mobile={true} />
                 <hr />
+                <LatestReviews reviews={reviews} bookId={book?.id} mobile={true} />
             </div>
         </>
     )
