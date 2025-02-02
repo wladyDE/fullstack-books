@@ -1,7 +1,7 @@
 package com.library.backend.controller;
 
 import com.library.backend.entity.Review;
-import com.library.backend.repository.ReviewRepository;
+import com.library.backend.service.ReviewService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/reviews")
 public class ReviewController {
     @Autowired
-    private ReviewRepository reviewRepository;
+    private ReviewService reviewService;
 
     @GetMapping("/search/findByBookId")
     public Page<Review> getReview(
@@ -23,6 +23,6 @@ public class ReviewController {
             @RequestParam(value = "page", defaultValue = "0") int page,
             @RequestParam(value = "size", defaultValue = "10") int size) {
         Pageable pageable = PageRequest.of(page, size);
-        return reviewRepository.findByBookId(bookId, pageable);
+        return reviewService.findByBookId(bookId, pageable);
     }
 }

@@ -1,7 +1,7 @@
 package com.library.backend.controller;
 
 import com.library.backend.entity.Book;
-import com.library.backend.repository.BookRepository;
+import com.library.backend.service.BookService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -14,20 +14,41 @@ import org.springframework.web.server.ResponseStatusException;
 @RequestMapping("/api/books")
 public class BookController {
     @Autowired
-    private BookRepository bookRepository;
+    private BookService bookService;
 
     @GetMapping()
     public Page<Book> getBooks(
             @RequestParam(value = "page", defaultValue = "0") int page,
             @RequestParam(value = "size", defaultValue = "10") int size) {
         Pageable pageable = PageRequest.of(page, size);
-        return bookRepository.findAll(pageable);
+        return bookService.findAll(pageable);
     }
 
     @GetMapping("/{id}")
     public Book getBook(@PathVariable("id") Long id) {
-        return bookRepository.findById(id)
+        return bookService.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Book not found"));
+    }
+
+    @GetMapping("/secure/currentloans/count")
+    public int currentLoansCount() {
+        String userEmail = "testuser@email";
+
+        return bookService.currentLoansCount(userEmail);
+    }
+
+    @GetMapping("/secure/ischeckedout/byuser")
+    public Boolean checkoutBookByUser(@RequestParam Long bookId) {
+        String userEmail = "testuser@email.com";
+
+        return bookService.checkoutBookByUser(userEmail, bookId);
+    }
+
+    @PutMapping("/secure/checkout")
+    public Book checkoutBook(@RequestParam Long bookId) throws Exception {
+        String userEmail = "testuser@email.com";
+
+        return bookService.checkoutBook(userEmail, bookId);
     }
 
     @GetMapping("/search/findByTitleContaining")
@@ -36,7 +57,7 @@ public class BookController {
             @RequestParam(value = "page", defaultValue = "0") int page,
             @RequestParam(value = "size", defaultValue = "10") int size) {
         Pageable pageable = PageRequest.of(page, size);
-        return bookRepository.findByTitleContaining(title, pageable);
+        return bookService.findByTitleContaining(title, pageable);
     }
 
     @GetMapping("/search/findByCategory")
@@ -45,7 +66,7 @@ public class BookController {
             @RequestParam(value = "page", defaultValue = "0") int page,
             @RequestParam(value = "size", defaultValue = "10") int size) {
         Pageable pageable = PageRequest.of(page, size);
-        return bookRepository.findByCategory(category, pageable);
+        return bookService.findByCategory(category, pageable);
     }
 }
 
