@@ -2,6 +2,7 @@ package com.library.backend.controller;
 
 import com.library.backend.entity.Book;
 import com.library.backend.service.BookService;
+import com.library.backend.utils.ExtractJWT;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -31,22 +32,24 @@ public class BookController {
     }
 
     @GetMapping("/secure/currentloans/count")
-    public int currentLoansCount() {
-        String userEmail = "testuser@email";
+    public int currentLoansCount(@RequestHeader(value = "Authorization") String token) {
+        String userEmail = ExtractJWT.payloadJWTExtraction(token, "\"sub\"");
 
         return bookService.currentLoansCount(userEmail);
     }
 
     @GetMapping("/secure/ischeckedout/byuser")
-    public Boolean checkoutBookByUser(@RequestParam Long bookId) {
-        String userEmail = "testuser@email.com";
+    public Boolean checkoutBookByUser(@RequestParam Long bookId,
+                                      @RequestHeader(value = "Authorization") String token) {
+        String userEmail = ExtractJWT.payloadJWTExtraction(token, "\"sub\"");
 
         return bookService.checkoutBookByUser(userEmail, bookId);
     }
 
     @PutMapping("/secure/checkout")
-    public Book checkoutBook(@RequestParam Long bookId) throws Exception {
-        String userEmail = "testuser@email.com";
+    public Book checkoutBook(@RequestParam Long bookId,
+                             @RequestHeader(value = "Authorization") String token) throws Exception {
+        String userEmail = ExtractJWT.payloadJWTExtraction(token, "\"sub\"");
 
         return bookService.checkoutBook(userEmail, bookId);
     }
