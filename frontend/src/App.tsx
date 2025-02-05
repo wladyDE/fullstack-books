@@ -1,6 +1,6 @@
 import { Route, Switch, Redirect, useHistory } from 'react-router-dom'
 import { OktaAuth, toRelativeUrl } from '@okta/okta-auth-js'
-import { LoginCallback, Security } from '@okta/okta-react'
+import { LoginCallback, SecureRoute, Security } from '@okta/okta-react'
 
 import './App.css'
 import { Footer } from './layouts/Footer/Footer'
@@ -11,6 +11,7 @@ import { BookCheckoutPage } from './layouts/BookCheckoutPage/BookCheckoutPage'
 import { oktaConfig } from './lib/oktaConfig'
 import LoginWidget from './auth/LoginWidget'
 import { ReviewListPage } from './layouts/BookCheckoutPage/ReviewListPage/ReviewListPage'
+import { ShelfPage } from './layouts/ShelfPage/ShelfPage'
 
 const oktaAuth = new OktaAuth(oktaConfig)
 
@@ -29,7 +30,7 @@ export const App = () => {
     <div className='d-flex flex-column min-vh-100'>
       <Security oktaAuth={oktaAuth} restoreOriginalUri={restoreOriginalUri} onAuthRequired={customAuthHandler}>
         <Navbar />
-        <div className='flex-grow-1'>
+        <div className="flex-grow-1">
           <Switch>
             <Route path="/" exact>
               <Redirect to="/home" />
@@ -46,11 +47,12 @@ export const App = () => {
             <Route path="/checkout/:bookId">
               <BookCheckoutPage />
             </Route>
-            <Route path='/login' render={
+            <Route path="/login" render={
               () => <LoginWidget config={oktaConfig} />
             }
             />
-            <Route path='/login/callback' component={LoginCallback} />
+            <Route path="/login/callback" component={LoginCallback} />
+            <SecureRoute path="/shelf"><ShelfPage/></SecureRoute>
           </Switch>
         </div>
         <Footer />

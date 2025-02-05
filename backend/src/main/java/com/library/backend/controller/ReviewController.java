@@ -1,6 +1,6 @@
 package com.library.backend.controller;
 
-import com.library.backend.dto.ReviewRequest;
+import com.library.backend.requestmodels.ReviewRequest;
 import com.library.backend.entity.Review;
 import com.library.backend.service.ReviewService;
 import com.library.backend.utils.ExtractJWT;

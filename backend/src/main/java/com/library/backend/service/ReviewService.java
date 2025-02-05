@@ -1,8 +1,7 @@
 package com.library.backend.service;
 
-import com.library.backend.dto.ReviewRequest;
+import com.library.backend.requestmodels.ReviewRequest;
 import com.library.backend.entity.Review;
-import com.library.backend.repository.BookRepository;
 import com.library.backend.repository.ReviewRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;

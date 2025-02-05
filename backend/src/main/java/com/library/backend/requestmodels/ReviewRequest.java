@@ -1,4 +1,4 @@
-package com.library.backend.dto;
+package com.library.backend.requestmodels;
 
 import lombok.Data;
 
